@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogBackEnd.Models.DTO;
+using BlogBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BlogBackEnd.Controllers
 {
     [Route("[controller]")]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
+        private readonly UserService _data;
+        //create a constructor
 
-        public UserController(ILogger<UserController> logger)
-        {
-            _logger = logger;
+        public UserController(UserService dataFromService) {
+           _data = dataFromService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
+        //add a user
+        [HttpPost("AddUsers")]
+        public bool AddUser(CreateAccountDTO UserToAdd) {
+            return _data.AddUser(UserToAdd);
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
-        }
+          // if the user already exists
+          //if the user does not exist create an account
+          //else throw an error
+        
     }
 }
