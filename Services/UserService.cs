@@ -12,17 +12,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using Azure.Identity;
+using BlogBackEnd.models.DTO;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BlogBackEnd.Services
 {
     public class UserService : ControllerBase
     {   
-         public IEnumerable<UserModel> GetAllUsers(){
-           return _context.UserInfo;
-        }
         private readonly DataContext _context;
         public UserService(DataContext context){
             _context = context;
+        }
+         public IEnumerable<UserModel> GetAllUsers(){
+           return _context.UserInfo;
         }
         public bool DoesUserExist(string? username){
            return _context.UserInfo.SingleOrDefault(user => user.Username == username) != null;
@@ -34,7 +36,7 @@ namespace BlogBackEnd.Services
                 UserModel newUser = new UserModel();
 
                 var newHashedPassword = HashPassword(UserToAdd.Password);
-                // newUser.Id = UserToAdd.Id;
+                newUser.Id = UserToAdd.Id;
                 newUser.Username = UserToAdd.Username;
                 newUser.Salt = newHashedPassword.Salt;
                 newUser.Hash = newHashedPassword.Hash;
@@ -50,7 +52,7 @@ namespace BlogBackEnd.Services
          var provider = new RNGCryptoServiceProvider();
          provider.GetNonZeroBytes(SaltBytes);
          var Salt = Convert.ToBase64String(SaltBytes);
-         var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password,SaltBytes,10000);
+         var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, SaltBytes, 10000);
          var Hash = Convert.ToBase64String(rfc2898DeriveBytes.GetBytes(256));
          newHashedPassword.Salt = Salt;
          newHashedPassword.Hash = Hash;
@@ -111,6 +113,15 @@ namespace BlogBackEnd.Services
             result = _context.SaveChanges() != 0;
            }
            return result;
+        }
+
+         public UserIdDTO GetUserIdDTOByUsername(string? username)
+        {
+            var UserInfo = new UserIdDTO();
+            var foundUser =_context.UserInfo.SingleOrDefault(user => user.Username == username);
+            UserInfo.UserId = foundUser.Id;
+            UserInfo.PublisherName = foundUser.Username;
+            return UserInfo;
         }
     }
 }

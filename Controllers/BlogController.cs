@@ -52,5 +52,10 @@ namespace BlogBackEnd.Controllers
         public IEnumerable<BlogItemsModels> GetPublishedItems(){
             return _data.GetPublishedItems();
         }
+        [HttpGet("GetItemsByUserID/{UserId}")]
+        public IEnumerable<BlogItemsModels>GetItemsByUserID(int UserId)
+        {
+            return _data.GetItemsByUserID(UserId);
+        }
     }
 }

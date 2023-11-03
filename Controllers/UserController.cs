@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogBackEnd.models.DTO;
 using BlogBackEnd.Models;
 using BlogBackEnd.Models.DTO;
 using BlogBackEnd.Services;
@@ -20,6 +21,11 @@ namespace BlogBackEnd.Controllers
 
         public UserController(UserService dataFromService) {
            _data = dataFromService;
+        }
+        [HttpGet("userbyusername/{username}")]
+        public UserIdDTO GetUserIdDTOByUsername(string username)
+        {
+            return _data.GetUserIdDTOByUsername(username);
         }
 
         //add a user
@@ -47,5 +53,6 @@ namespace BlogBackEnd.Controllers
         {
             return _data.UpdateUser(id,username);
         }
+        
     }
 }
